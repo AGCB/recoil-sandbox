@@ -13,3 +13,10 @@
   padding: 40px;
   margin: -22px;
 }
+
+.toggle-contrast {
+  position: absolute;
+  top: 20px;
+  right:20px;
+  font-size: 10px;
+}
