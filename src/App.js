@@ -1,9 +1,13 @@
+// the power that I see being offered is a hook similar to useState
+// with the upgrade of being able to be used by multiple components
+//
+//
+//
+//
+
+
 /*
-
-the power that I see being offered is a hook similar to useState
-with the upgrade of being able to be used by multiple components
-
-This hook will be useRecoilState for state and useRecoilValue for derived state
+This hook will be `useRecoilState` for state and `useRecoilValue` for derived state
 Atoms being for state and Selectors being for derived.
 
 Core Concept of the ATOM...
@@ -47,6 +51,45 @@ the atom has a key of "fontSizeState"... how does that match to "font-size" or "
 
 
  */
+//
+//
+//
+//
+//
+/*
+Core Concept of SELECTOR.
+- pure function;
+- takes atoms or other selectors as input.
+- any changes upstream to deps with trigger rerender of subscribed components
+-
+- we use a selector function.
+const fontSizeLabelState = selector({
+  key:'fontSizeLabelState',
+  get: ({get}) => {
+    const fontSize = get(fontSizeState) // you see here we get our state.
+    const unit = px;
+    // here we see our derived data... its just a concat but it works to showoff.
+    return `${fontSize}${unit}`
+}
+})
+
+then we define a fontButton component.
+
+function fontButton() {
+const [fontSize, setFontSize ] = useRecoilState(fontSizeState);
+const fontSizeLabel = useRecoilValue(fontSizeLabelState);
+
+return (
+  <>
+    <div>current font size: ${fontSizeLabel}</div>
+    <button onClick={setFontSize(fontSize+1)} style={{fontSize}}>CLICK TO ENLARGE</button>
+  </>
+)
+}
+
+ */
+//
+//
 //
 import React from 'react';
 import logo from './logo.svg';
