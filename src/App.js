@@ -91,6 +91,17 @@ return (
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 import React from 'react';
 import {
   RecoilRoot,
@@ -99,21 +110,68 @@ import {
   useRecoilState,
   useRecoilValue,
 } from 'recoil';
-
 import './App.css';
 
+// define an atom.
+const textState = atom({
+  key: 'textState',
+  default:'default-text-placeholder',
+});
+
+function CharacterCounter() {
+  return (
+    <div>
+      <TextInput />
+      <CharacterCount />
+    </div>
+  )
+};
+
+function TextInput() {
+  const [text ,setText] = useRecoilState(textState);
+  const onChange = e => {
+    setText(e.target.value);
+  }
+  return (
+    <div>
+      <input type="text" value={text} onChange={onChange} />
+      <br />
+      Echo: {text}
+    </div>
+  )
+}
+
+const charCountState = selector({
+  key: 'charCountState',
+  get: ({get}) => {
+    const text = get(textState);
+    return text.length;
+  }
+});
+function CharacterCount() {
+  const count = useRecoilValue(charCountState);
+  return <>CharacterCount: {count}</>
+}
 function App() {
   const [contrast, setContrast] = React.useState(true);
 
   return (
     <div className={`app ${contrast? 'light':'dark'}-mode`}>
       <h1>playing-with-recoil</h1>
-      //toggle darkMode button
       <button onClick={e => {
           setContrast(!contrast)
         }}>TOGGLE CONTRAST</button>
+      <RecoilRoot>
+        <CharacterCounter />
+      </RecoilRoot>
   </div>
   );
 }
 
 export default App;
+
+
+// first impression.. it feels nice to have something similar to useState that
+// "magically" can be used across different components.
+// So we could technically do this with Context but if you didn't know how many contexts
+// you would need, Dave is saying that this scenario would break Context.
