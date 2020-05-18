@@ -1,108 +1,9 @@
-// the power that I see being offered is a hook similar to useState
-// with the upgrade of being able to be used by multiple components
-//
-//
-//
-//
-
-
 /*
-This hook will be `useRecoilState` for state and `useRecoilValue` for derived state
-Atoms being for state and Selectors being for derived.
-
-Core Concept of the ATOM...
-
-const fontSizeState = atom()     // the atom function.
-it takes an object with key and default keys.
-key value must be ( globally ) unique among all atoms and selectors.
-const fontSizeState = atom({
-  key:'fontSizeState',
-  default:14,
-});
-
-then a component reads and writes to an atom with useRecoilState
-
-function fontButton() {
-  const [ fontSize, setFontSize ] = useRecoilState(fontSizeState);
-
-  then here we add a button with onClick running setFontSize.
-  we also set the Style attribute to be {{fontSize}}... but that part makes no sense to me...
-  we didn't define font-size: 14px...
-
-  <button onClick={() => {
-  setFontSize(fontSize+1)
-  }} style={{fontSize}}></button>
-
-  }
-
-they are suggesting that we could now also define a Text Component that can use
-the same recoilState..
-
-function Text(){
-const [fontSize, setFontSize ] = useRecoilState(fontSizeState);
-
-return (
-  <p style={{fontSize}}>This text will increase in size too... </p>
-)
-}
-again.. this feels strange that we are using style without a keyvaluePair that
-matches to a css selector...
-the atom has a key of "fontSizeState"... how does that match to "font-size" or "height"?
 
 
  */
-//
-//
-//
-//
-//
-/*
-Core Concept of SELECTOR.
-- pure function;
-- takes atoms or other selectors as input.
-- any changes upstream to deps with trigger rerender of subscribed components
--
-- we use a selector function.
-const fontSizeLabelState = selector({
-  key:'fontSizeLabelState',
-  get: ({get}) => {
-    const fontSize = get(fontSizeState) // you see here we get our state.
-    const unit = px;
-    // here we see our derived data... its just a concat but it works to showoff.
-    return `${fontSize}${unit}`
-}
-})
-
-then we define a fontButton component.
-
-function fontButton() {
-const [fontSize, setFontSize ] = useRecoilState(fontSizeState);
-const fontSizeLabel = useRecoilValue(fontSizeLabelState);
-
-return (
-  <>
-    <div>current font size: ${fontSizeLabel}</div>
-    <button onClick={setFontSize(fontSize+1)} style={{fontSize}}>CLICK TO ENLARGE</button>
-  </>
-)
-}
-
- */
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 import React from 'react';
+import TodoListFromDocs from './components/TodoListFromDocs/'
 import {
   RecoilRoot,
   atom,
@@ -112,11 +13,30 @@ import {
 } from 'recoil';
 import './App.css';
 
+
+
+
+
+
+
+
+
+
 // define an atom.
 const textState = atom({
   key: 'textState',
   default:'default-text-placeholder',
 });
+
+
+
+
+
+
+
+
+
+
 
 function CharacterCounter() {
   return (
@@ -133,14 +53,35 @@ function TextInput() {
     setText(e.target.value);
   }
   return (
-    <div>
-      <input type="text" value={text} onChange={onChange} />
+    <div style={{"margin":"20px"}}>
+      <input
+        type="text"
+        value={text}
+        onChange={onChange}
+      />
       <br />
       Echo: {text}
     </div>
   )
 }
 
+function CharacterCount() {
+  const count = useRecoilValue(charCountState);
+  return <>CharacterCount: {count}</>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// define a selector
 const charCountState = selector({
   key: 'charCountState',
   get: ({get}) => {
@@ -148,30 +89,32 @@ const charCountState = selector({
     return text.length;
   }
 });
-function CharacterCount() {
-  const count = useRecoilValue(charCountState);
-  return <>CharacterCount: {count}</>
-}
+
+
+
+
+
+
+
+
+
 function App() {
   const [contrast, setContrast] = React.useState(true);
 
   return (
     <div className={`app ${contrast? 'light':'dark'}-mode`}>
-      <h1>playing-with-recoil</h1>
-      <button onClick={e => {
+      <h1>Recoil Sandbox</h1>
+      <button
+        className="toggle-contrast"
+        onClick={e => {
           setContrast(!contrast)
-        }}>TOGGLE CONTRAST</button>
+          }}>TOGGLE CONTRAST</button>
       <RecoilRoot>
         <CharacterCounter />
+        <TodoListFromDocs />
       </RecoilRoot>
   </div>
   );
 }
 
 export default App;
-
-
-// first impression.. it feels nice to have something similar to useState that
-// "magically" can be used across different components.
-// So we could technically do this with Context but if you didn't know how many contexts
-// you would need, Dave is saying that this scenario would break Context.
